@@ -74,6 +74,17 @@ class Enumerator:
         os.system("sudo NXScan --only-enumerate -l {0} -o {1}".format(subs,path+"/nxscan"))
         os.system("cat {0}/nxscan/enum.txt {0}/portenum.kenz* | sort -u > {1}".format(path, output))
         return("completed portenum for: "+domain)
+
+    #enumerates dns records using DNSX
+    def dnsenum(self):
+        domain = self.domain
+        path = self.path
+        subs = path+"/subenum.kenz"
+        if(os.path.exists(subs) == False):
+            return("run subenum for: "+domain)
+        output = path+"/dnsenum.kenz"
+        os.system("dnsx -l {0} -o {1} -a -aaaa -cname -mx -ptr -soa -txt -resp -retry 2".format(subs, path))
+        return("completed dnsenum for: "+domain)
     
     #enumerates asn using domlock
     def asnenum(self):

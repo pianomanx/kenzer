@@ -49,7 +49,7 @@ class Kenzer(object):
     
     #initializations
     def __init__(self):
-        print(BLUE+"KENZER[3.0] by ARPSyndicate"+CLEAR)
+        print(BLUE+"KENZER[3.01] by ARPSyndicate"+CLEAR)
         print(YELLOW+"automated web assets enumeration & scanning"+CLEAR)
         self.client = zulip.Client(email=_BotMail, site=_Site, api_key=_APIKey)
         self.upload=False
@@ -65,7 +65,7 @@ class Kenzer(object):
         time.sleep(3)
         self.trainer.train("chatterbot.corpus.english")
         time.sleep(3)
-        self.modules=["monitor", "subenum", "webenum", "conenum", "portenum", "asnenum", "urlenum", "favscan", "cscan", "idscan", "subscan", "cvescan", "vulnscan", "portscan", "parascan", "endscan", "buckscan", "vizscan", "enum", "scan", "recon", "hunt", "remlog"]
+        self.modules=["monitor", "subenum", "webenum", "conenum", "dnsenum", "portenum", "asnenum", "urlenum", "favscan", "cscan", "idscan", "subscan", "cvescan", "vulnscan", "portscan", "parascan", "endscan", "buckscan", "vizscan", "enum", "scan", "recon", "hunt", "remlog", "sync"]
         print(YELLOW+"[*] KENZER is online"+CLEAR)
         print(YELLOW+"[*] {0} modules up & running".format(len(self.modules))+CLEAR)
 
@@ -81,12 +81,13 @@ class Kenzer(object):
 
     #manual
     def man(self):
-        message = "**KENZER[3.0]**\n"
+        message = "**KENZER[3.01]**\n"
         message +="**KENZER modules**\n"
         message +="  `subenum` - enumerates subdomains\n"
         message +="  `webenum` - enumerates webservers\n"
         message +="  `conenum` - enumerates hidden files & directories\n"
         message +="  `portenum` - enumerates open ports\n"
+        message +="  `dnsenum` - enumerates dns records\n"
         message +="  `asnenum` - enumerates asn\n"
         message +="  `urlenum` - enumerates urls\n"
         message +="  `subscan` - hunts for subdomain takeovers\n"
@@ -106,6 +107,7 @@ class Kenzer(object):
         message +="  `hunt` - runs your custom workflow\n"
         message +="  `remlog` - removes log files\n"
         message +="  `upload` - switches upload functionality\n"
+        message +="  `sync` - synchronizes the local kenzerdb with github\n"
         message +="  `upgrade` - upgrades kenzer to latest version\n"
         message +="  `monitor` - monitors ct logs for new subdomains\n"
         message +="  `monitor normalize` - normalizes the enumerations from ct logs\n"
@@ -193,6 +195,21 @@ class Kenzer(object):
             self.sendMessage(message)
             if self.upload:
                 file = "webenum.kenz"
+                self.uploader(self.content[i], file)
+        return
+    
+    #enumerates dns records
+    def dnsenum(self):
+        for i in range(2,len(self.content)):
+            self.sendMessage("started dnsenum for: "+self.content[i].lower())
+            if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
+                self.sendMessage("invalid domain !!!")
+                continue
+            self.enum = enumerator.Enumerator(self.content[i].lower(), _kenzerdb, _kenzer)
+            message = self.enum.dnsenum()
+            self.sendMessage(message)
+            if self.upload:
+                file = "dnsenum.kenz"
                 self.uploader(self.content[i], file)
         return
 
@@ -431,8 +448,9 @@ class Kenzer(object):
     #runs all enumeration modules
     def enum(self):
         self.subenum()
-        self.webenum()
         self.portenum()
+        self.webenum()
+        self.dnsenum()
         self.conenum()
         self.asnenum()
         #experimental ones
@@ -459,6 +477,7 @@ class Kenzer(object):
         self.subenum()
         self.portenum()
         self.webenum()
+        self.dnsenum()
         self.conenum()
         self.subscan()
         self.idscan()
@@ -482,7 +501,7 @@ class Kenzer(object):
         self.scan()
         return
     
-    #synchronizes the local kenzerdb with github instance
+    #synchronizes the local kenzerdb with github
     def sync(self):
         os.system("cd {0} && git remote set-url origin https://{1}@github.com/{2}/{3}.git && git pull && git add . && git commit -m updated && git push".format(_kenzerdb, _github, _user, _repo))
         self.sendMessage("sync complete")
@@ -532,6 +551,8 @@ class Kenzer(object):
                     self.webenum()
                 elif content[1].lower() == "asnenum":
                     self.asnenum()
+                elif content[1].lower() == "dnsenum":
+                    self.dnsenum()
                 elif content[1].lower() == "conenum":
                     self.conenum()
                 elif content[1].lower() == "favscan":

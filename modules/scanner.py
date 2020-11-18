@@ -25,7 +25,7 @@ class Scanner:
     
     #runs jaeles
     def jaeles(self, template, hosts, output):
-        os.system("jaeles scan --retry 2 --no-background -c 80 -s {3}jaeles/{0}/ --timeout 8 -U {1} -O {2} --no-db --chunk true ".format(template, hosts, output, self.templates))
+        os.system("jaeles scan --retry 2 --no-background -c 80 --rootDir {3}jaeles/ -s {3}jaeles/{0}/ --timeout 8 -U {1} -O {2} --no-db --chunk true ".format(template, hosts, output, self.templates))
         return
 
     #core modules
@@ -50,8 +50,6 @@ class Scanner:
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
         os.system("cat {0}/subscan* > {1}".format(path, out))
-        os.system("cat {0} | cut -d' ' -f 3 | dnsprobe -r CNAME -f simple -o {1}".format(out, path+"/dnsprobeCNAME.log"))
-        os.system("cat {0} | cut -d' ' -f 3 | dnsprobe -r A -f simple -o {1}".format(out, path+"/dnsprobeA.log"))
         return("completed subscan for: "+domain) 
 
     #hunts for CVEs using nuclei & jaeles
