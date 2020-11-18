@@ -49,7 +49,7 @@ class Kenzer(object):
     
     #initializations
     def __init__(self):
-        print(BLUE+"KENZER[3.01] by ARPSyndicate"+CLEAR)
+        print(BLUE+"KENZER[3.02] by ARPSyndicate"+CLEAR)
         print(YELLOW+"automated web assets enumeration & scanning"+CLEAR)
         self.client = zulip.Client(email=_BotMail, site=_Site, api_key=_APIKey)
         self.upload=False
@@ -81,7 +81,7 @@ class Kenzer(object):
 
     #manual
     def man(self):
-        message = "**KENZER[3.01]**\n"
+        message = "**KENZER[3.02]**\n"
         message +="**KENZER modules**\n"
         message +="  `subenum` - enumerates subdomains\n"
         message +="  `webenum` - enumerates webservers\n"
@@ -533,7 +533,7 @@ class Kenzer(object):
         if self.sender_email == _BotMail:
             return
         try:
-            if len(content)>1 and content[0].lower() == "kenzer":
+            if len(content)>1 and content[0].lower() == "@**{0}**".format(_BotMail.split('@')[0].replace("-bot","")):
                 if content[1].lower() == "man":
                     if len(content)==2:
                         self.man()
@@ -599,14 +599,11 @@ class Kenzer(object):
                     self.upload = not self.upload
                     self.sendMessage("upload: "+str(self.upload))
                 else:
-                    message = "excuse me??"
+                    message = self.chatbot.get_response(' '.join(self.content))
+                    message = message.serialize()['text']
                     self.sendMessage(message)
-            else:
-                message = self.chatbot.get_response(' '.join(self.content))
-                message = message.serialize()['text']
-                self.sendMessage(message)
-        except:
-            self.sendMessage("an exception occurred")
+        except Exception as exception:
+            self.sendMessage("Exception: {}".format(type(exception).__name__))
         return    
 
 #main

@@ -10,11 +10,13 @@
 3. Create a new generic bot named `kenzer`<br>
 4. Add all the configurations in `configs/kenzer.conf`<br>
 5. Install/Run using - <br>
-    * `./install.sh -binaries` [if you need `kenzer-compatible` binaries to be installed]<br>
+    * `./install.sh -b` [if you need `kenzer-compatible` binaries to be installed]<br>
     * `./install.sh` [if you do not need `kenzer-compatible` binaries to be installed]<br>
     * `./run.sh` [if you do not need installation at all]<br>
+    * `./service.sh` [initialize it as a service post-installation]
 6. Interact with `kenzer` using Zulip client, by adding bot to a stream or via DM.<br>
-7. Test `kenzer man` as Zulip input to display available commands.<br>
+7. Test `@**kenzer** man` as Zulip input to display available commands.<br>
+8. All the commands can be used by mentioning the chatbot using the prefix `@**kenzer**`.<br>
 
 ## Built-in Functionalities
 >* `subenum` - enumerates subdomains

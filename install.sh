@@ -1,7 +1,7 @@
 mkdir resources
 git clone https://github.com/ARPSyndicate/kenzerdb.git
 cd resources
-if getopts "binaries:" arg; then
+if getopts "b" arg; then
   git clone https://github.com/ARPSyndicate/kenzer-bin.git
 fi
 git clone https://github.com/ARPSyndicate/kenzer-templates.git

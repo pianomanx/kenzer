@@ -26,8 +26,8 @@ class Enumerator:
         output =path+"/subenum.kenz"
         if(os.path.exists(output)):
             self.shuffsolv(output, domain)
-            os.system("mv {1} {0}".format(output, path+"/shuffsolv.log"))
-        os.system("cat {0}/subfinder.log {0}/subenum.kenz* {0}/shuffledns.log {0}/gitdomain.log | sort -u > {1}".format(path, output))
+            os.system("rm {0}".format(output))
+        os.system("cat {0}/subfinder.log {0}/subenum.kenz* {0}/shuffledns.log {0}/shuffsolv.log {0}/gitdomain.log | sort -u > {1}".format(path, output))
         return("completed subenum for: "+domain) 
     
     #enumerates webservers
@@ -39,7 +39,7 @@ class Enumerator:
             return("run portenum for: "+domain)
         output = path+"/httpx.log"
         if(os.path.exists(output)):
-            os.system("mv {0} {0}.old".format(output))
+            os.system("rm {0}".format(output))
         self.httpx(subs, output)
         output = path+"/webenum.kenz"
         if(os.path.exists(output)):
@@ -83,6 +83,8 @@ class Enumerator:
         if(os.path.exists(subs) == False):
             return("run subenum for: "+domain)
         output = path+"/dnsenum.kenz"
+        if(os.path.exists(output)):
+            os.system("mv {0} {0}.old".format(output))
         os.system("dnsx -l {0} -o {1} -a -aaaa -cname -mx -ptr -soa -txt -resp -retry 2".format(subs, path))
         return("completed dnsenum for: "+domain)
     
