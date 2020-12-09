@@ -49,7 +49,7 @@ class Kenzer(object):
     
     #initializations
     def __init__(self):
-        print(BLUE+"KENZER[3.02] by ARPSyndicate"+CLEAR)
+        print(BLUE+"KENZER[3.03] by ARPSyndicate"+CLEAR)
         print(YELLOW+"automated web assets enumeration & scanning"+CLEAR)
         self.client = zulip.Client(email=_BotMail, site=_Site, api_key=_APIKey)
         self.upload=False
@@ -65,7 +65,7 @@ class Kenzer(object):
         time.sleep(3)
         self.trainer.train("chatterbot.corpus.english")
         time.sleep(3)
-        self.modules=["monitor", "subenum", "webenum", "conenum", "dnsenum", "portenum", "asnenum", "urlenum", "favscan", "cscan", "idscan", "subscan", "cvescan", "vulnscan", "portscan", "parascan", "endscan", "buckscan", "vizscan", "enum", "scan", "recon", "hunt", "remlog", "sync"]
+        self.modules=["monitor", "subenum", "webenum", "headenum", "conenum", "dnsenum", "portenum", "asnenum", "urlenum", "favscan", "cscan", "idscan", "subscan", "cvescan", "vulnscan", "portscan", "parascan", "endscan", "buckscan", "vizscan", "enum", "scan", "recon", "hunt", "remlog", "sync"]
         print(YELLOW+"[*] KENZER is online"+CLEAR)
         print(YELLOW+"[*] {0} modules up & running".format(len(self.modules))+CLEAR)
 
@@ -81,12 +81,13 @@ class Kenzer(object):
 
     #manual
     def man(self):
-        message = "**KENZER[3.02]**\n"
+        message = "**KENZER[3.03]**\n"
         message +="**KENZER modules**\n"
         message +="  `subenum` - enumerates subdomains\n"
-        message +="  `webenum` - enumerates webservers\n"
-        message +="  `conenum` - enumerates hidden files & directories\n"
         message +="  `portenum` - enumerates open ports\n"
+        message +="  `webenum` - enumerates webservers\n"
+        message +="  `headenum` - enumerates additional info from webservers\n"
+        message +="  `conenum` - enumerates hidden files & directories\n"
         message +="  `dnsenum` - enumerates dns records\n"
         message +="  `asnenum` - enumerates asn\n"
         message +="  `urlenum` - enumerates urls\n"
@@ -156,7 +157,7 @@ class Kenzer(object):
 
     #monitors ct logs
     def monitor(self):
-        self.sendMessage("started monitoring")
+        self.sendMessage("[monitoring - #({0})]".format(len(self.content)-2))
         self.monitor = monitor.Monitor(" ".join(self.content[2:]), _kenzerdb)
         self.monitor.certex()
         return
@@ -165,19 +166,19 @@ class Kenzer(object):
     def normalize(self):
         self.monitor = monitor.Monitor(" ".join(self.content[2:]), _kenzerdb)
         self.monitor.normalize()
-        self.sendMessage("normalized successfully")
+        self.sendMessage("[normalized - #({0})]".format(len(self.content)-2))
         return
 
     #enumerates subdomains
     def subenum(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started subenum for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[subenum - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.enum = enumerator.Enumerator(self.content[i].lower(), _kenzerdb, _kenzer, _github)
             message = self.enum.subenum()
-            self.sendMessage(message)
+            self.sendMessage("[subenum - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "subenum.kenz"
                 self.uploader(self.content[i], file)
@@ -186,28 +187,43 @@ class Kenzer(object):
     #probes web servers from enumerated subdomains
     def webenum(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started webenum for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[webenum - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.enum = enumerator.Enumerator(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.enum.webenum()
-            self.sendMessage(message)
+            self.sendMessage("[webenum - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "webenum.kenz"
                 self.uploader(self.content[i], file)
         return
     
+    #enumerates additional info from webservers
+    def headenum(self):
+        for i in range(2,len(self.content)):
+            if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
+                continue
+            self.sendMessage("[headenum - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
+            self.enum = enumerator.Enumerator(self.content[i].lower(), _kenzerdb, _kenzer)
+            message = self.enum.headenum()
+            self.sendMessage("[headenum - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
+            if self.upload:
+                file = "headenum.kenz"
+                self.uploader(self.content[i], file)
+        return
+
     #enumerates dns records
     def dnsenum(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started dnsenum for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[dnsenum - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.enum = enumerator.Enumerator(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.enum.dnsenum()
-            self.sendMessage(message)
+            self.sendMessage("[dnsenum - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "dnsenum.kenz"
                 self.uploader(self.content[i], file)
@@ -216,13 +232,13 @@ class Kenzer(object):
     #enumerates hidden files & directories
     def conenum(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started conenum for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[conenum - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.enum = enumerator.Enumerator(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.enum.conenum()
-            self.sendMessage(message)
+            self.sendMessage("[conenum - #({0}/{1}) ~] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             if self.upload:
                 file = "conenum.kenz"
                 self.uploader(self.content[i], file)
@@ -231,13 +247,13 @@ class Kenzer(object):
     #enumerates asn for enumerated subdomains
     def asnenum(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started asnenum for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[asnenum - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.enum = enumerator.Enumerator(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.enum.asnenum()
-            self.sendMessage(message)
+            self.sendMessage("[asnenum - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "asnenum.kenz"
                 self.uploader(self.content[i], file)
@@ -246,13 +262,13 @@ class Kenzer(object):
     #enumerates open ports
     def portenum(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started portenum for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[portenum - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.enum = enumerator.Enumerator(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.enum.portenum()
-            self.sendMessage(message)
+            self.sendMessage("[portenum - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "portenum.kenz"
                 self.uploader(self.content[i], file)
@@ -261,13 +277,13 @@ class Kenzer(object):
     #enumerates urls
     def urlenum(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started urlenum for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[urlenum - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.enum = enumerator.Enumerator(self.content[i].lower(), _kenzerdb, _kenzer, _github)
             message = self.enum.urlenum()
-            self.sendMessage(message)
+            self.sendMessage("[urlenum - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "urlenum.kenz"
                 self.uploader(self.content[i], file)
@@ -276,13 +292,13 @@ class Kenzer(object):
     #hunts for subdomain takeovers
     def subscan(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started subscan for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[subscan - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.scan = scanner.Scanner(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.scan.subscan()
-            self.sendMessage(message)
+            self.sendMessage("[subscan - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "subscan.kenz"
                 self.uploader(self.content[i], file)
@@ -292,13 +308,13 @@ class Kenzer(object):
     #scans with customized templates
     def cscan(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started cscan for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[cscan - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.scan = scanner.Scanner(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.scan.cscan()
-            self.sendMessage(message)
+            self.sendMessage("[cscan - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "cscan.kenz"
                 self.uploader(self.content[i], file)
@@ -308,13 +324,13 @@ class Kenzer(object):
     #hunts for CVEs
     def cvescan(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started cvescan for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[cvescan - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.scan = scanner.Scanner(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.scan.cvescan()
-            self.sendMessage(message)
+            self.sendMessage("[cvescan - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "cvescan.kenz"
                 self.uploader(self.content[i], file)
@@ -324,13 +340,13 @@ class Kenzer(object):
     #hunts for other common vulnerabilities
     def vulnscan(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started vulnscan for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[vulnscan - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.scan = scanner.Scanner(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.scan.vulnscan()
-            self.sendMessage(message)
+            self.sendMessage("[vulnscan - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "vulnscan.kenz"
                 self.uploader(self.content[i], file)
@@ -339,13 +355,13 @@ class Kenzer(object):
     #scans open ports
     def portscan(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started portscan for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[portscan - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.scan = scanner.Scanner(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.scan.portscan()
-            self.sendMessage(message)
+            self.sendMessage("[portscan - #({0}/{1}) ~] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             if self.upload:
                 file = "portscan.kenz"
                 self.uploader(self.content[i], file)
@@ -354,13 +370,13 @@ class Kenzer(object):
     #hunts for vulnerable parameters
     def parascan(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started parascan for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[parascan - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.scan = scanner.Scanner(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.scan.parascan()
-            self.sendMessage(message)
+            self.sendMessage("[parascan - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "parascan.kenz"
                 self.uploader(self.content[i], file)
@@ -370,13 +386,13 @@ class Kenzer(object):
     #hunts for vulnerable endpoints
     def endscan(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started endscan for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[endscan - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.scan = scanner.Scanner(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.scan.endscan()
-            self.sendMessage(message)
+            self.sendMessage("[endscan - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "endscan.kenz"
                 self.uploader(self.content[i], file)
@@ -386,13 +402,13 @@ class Kenzer(object):
     #hunts for subdomain takeovers
     def buckscan(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started buckscan for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[buckscan - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.scan = scanner.Scanner(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.scan.buckscan()
-            self.sendMessage(message)
+            self.sendMessage("[buckscan - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "buckscan.kenz"
                 self.uploader(self.content[i], file)
@@ -402,13 +418,13 @@ class Kenzer(object):
     #fingerprints servers using favicons
     def favscan(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started favscan for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[favscan - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.scan = scanner.Scanner(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.scan.favscan()
-            self.sendMessage(message)
+            self.sendMessage("[favscan - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "favscan.kenz"
                 self.uploader(self.content[i], file)
@@ -417,13 +433,13 @@ class Kenzer(object):
     #identifies applications running on webservers
     def idscan(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started idscan for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[idscan - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.scan = scanner.Scanner(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.scan.idscan()
-            self.sendMessage(message)
+            self.sendMessage("[idscan - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "idscan.kenz"
                 self.uploader(self.content[i], file)
@@ -432,13 +448,13 @@ class Kenzer(object):
     #screenshots applications running on webservers
     def vizscan(self):
         for i in range(2,len(self.content)):
-            self.sendMessage("started vizscan for: "+self.content[i].lower())
             if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
-                self.sendMessage("invalid domain !!!")
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
                 continue
+            self.sendMessage("[vizscan - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             self.scan = scanner.Scanner(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.scan.vizscan()
-            self.sendMessage(message)
+            self.sendMessage("[vizscan - #({0}/{1}) ~] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
             if self.upload:
                 for file in os.listdir(_kenzerdb+self.content[i].lower()+"/aquatone/screenshots/"):
 
@@ -450,6 +466,7 @@ class Kenzer(object):
         self.subenum()
         self.portenum()
         self.webenum()
+        self.headenum()
         self.dnsenum()
         self.conenum()
         self.asnenum()
@@ -477,6 +494,7 @@ class Kenzer(object):
         self.subenum()
         self.portenum()
         self.webenum()
+        self.headenum()
         self.dnsenum()
         self.conenum()
         self.subscan()
@@ -549,6 +567,8 @@ class Kenzer(object):
                     self.subenum()
                 elif content[1].lower() == "webenum":
                     self.webenum()
+                elif content[1].lower() == "headenum":
+                    self.headenum()
                 elif content[1].lower() == "asnenum":
                     self.asnenum()
                 elif content[1].lower() == "dnsenum":
@@ -604,6 +624,7 @@ class Kenzer(object):
                     self.sendMessage(message)
         except Exception as exception:
             self.sendMessage("Exception: {}".format(type(exception).__name__))
+            print(exception.__class__.__name__ + ": " + exception.message)
         return    
 
 #main

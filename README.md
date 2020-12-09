@@ -20,8 +20,9 @@
 
 ## Built-in Functionalities
 >* `subenum` - enumerates subdomains
->* `webenum` - enumerates webservers
 >* `portenum` - enumerates open ports
+>* `webenum` - enumerates webservers
+>* `headenum` - enumerates additional info from webservers
 >* `asnenum` - enumerates asn
 >* `dnsenum` - enumerates dns records
 >* `conenum` - enumerates hidden files & directories

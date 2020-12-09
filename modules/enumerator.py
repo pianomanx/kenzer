@@ -28,7 +28,12 @@ class Enumerator:
             self.shuffsolv(output, domain)
             os.system("rm {0}".format(output))
         os.system("cat {0}/subfinder.log {0}/subenum.kenz* {0}/shuffledns.log {0}/shuffsolv.log {0}/gitdomain.log | sort -u > {1}".format(path, output))
-        return("completed subenum for: "+domain) 
+        if(os.path.exists(output)):
+            with open(output) as f:
+                line = len(f.readlines())
+        else:
+            line = 0
+        return line
     
     #enumerates webservers
     def webenum(self):
@@ -45,7 +50,31 @@ class Enumerator:
         if(os.path.exists(output)):
             os.system("mv {0} {0}.old".format(output))
         os.system("cat {0}/httpx.log {0}/webenum.kenz* | cut -d' ' -f 1 | sort -u > {1}".format(path, output))
-        return("completed webenum for: "+domain) 
+        if(os.path.exists(output)):
+            with open(output) as f:
+                line = len(f.readlines())
+        else:
+            line = 0
+        return line
+    
+    #enumerates additional information for webservers
+    def headenum(self):
+        domain = self.domain
+        path = self.path
+        subs = path+"/webenum.kenz"
+        if(os.path.exists(subs) == False):
+            return("run webenum for: "+domain)
+        output = path+"/headenum.kenz"
+        if(os.path.exists(output)):
+            os.system("rm {0}".format(output))
+        extras = " -status-code -title -web-server -websocket "
+        self.httpx(subs, output, extras)
+        if(os.path.exists(output)):
+            with open(output) as f:
+                line = len(f.readlines())
+        else:
+            line = 0
+        return line
 
     #enumerates urls
     def urlenum(self):
@@ -57,7 +86,12 @@ class Enumerator:
         if(os.path.exists(output)):
             os.system("mv {0} {0}.old".format(output))
         os.system("cat {0}/urlenum.kenz* {0}/gttpx* {0}/gittpx* | grep '\[200\]' | cut -d' ' -f 1 | sort -u> {1}".format(path, output))
-        return("completed urlenum for: "+domain)
+        if(os.path.exists(output)):
+            with open(output) as f:
+                line = len(f.readlines())
+        else:
+            line = 0
+        return line
 
     #enumerates open ports using NXScan
     def portenum(self):
@@ -73,7 +107,12 @@ class Enumerator:
             os.system("mv {0} {0}.old".format(output))
         os.system("sudo NXScan --only-enumerate -l {0} -o {1}".format(subs,path+"/nxscan"))
         os.system("cat {0}/nxscan/enum.txt {0}/portenum.kenz* | sort -u > {1}".format(path, output))
-        return("completed portenum for: "+domain)
+        if(os.path.exists(output)):
+            with open(output) as f:
+                line = len(f.readlines())
+        else:
+            line = 0
+        return line
 
     #enumerates dns records using DNSX
     def dnsenum(self):
@@ -85,8 +124,13 @@ class Enumerator:
         output = path+"/dnsenum.kenz"
         if(os.path.exists(output)):
             os.system("mv {0} {0}.old".format(output))
-        os.system("dnsx -l {0} -o {1} -a -aaaa -cname -mx -ptr -soa -txt -resp -retry 2".format(subs, path))
-        return("completed dnsenum for: "+domain)
+        os.system("dnsx -l {0} -o {1} -a -aaaa -cname -mx -ptr -soa -txt -resp -retry 2".format(subs, output))
+        if(os.path.exists(output)):
+            with open(output) as f:
+                line = len(f.readlines())
+        else:
+            line = 0
+        return line
     
     #enumerates asn using domlock
     def asnenum(self):
@@ -99,7 +143,12 @@ class Enumerator:
         if(os.path.exists(output)):
             os.system("rm {0}".format(output))
         os.system("domlock -l {0} -o {1}".format(subs, output))
-        return("completed asnenum for: "+domain)
+        if(os.path.exists(output)):
+            with open(output) as f:
+                line = len(f.readlines())
+        else:
+            line = 0
+        return line
     
     #enumerates hidden files & directories using ffuf
     def conenum(self):
@@ -112,7 +161,12 @@ class Enumerator:
         if(os.path.exists(output)):
             os.system("rm {0}".format(output))
         os.system("ffuf -u FuZZDoM/FuZZCoN -w {0}:FuZZDoM,{1}:FuZZCoN -mc 200 -of html -o {2} -t 80".format(subs, self.resources+"/kenzer-templates/ffuf.lst", output))
-        return("completed conenum for: "+domain)
+        if(os.path.exists(output)):
+            with open(output) as f:
+                line = len(f.readlines())
+        else:
+            line = 0
+        return line
 
     #helper modules
 
@@ -180,8 +234,8 @@ class Enumerator:
         return 
 
     #probes for web servers using httpx
-    def httpx(self, domains, output):
-        os.system("httpx -status-code -no-color -l {0} -threads 100 -retries 2 -timeout 6 -verbose -o {1}".format(domains, output))
+    def httpx(self, domains, output, extras=""):
+        os.system("httpx {2} -no-color -l {0} -threads 100 -retries 2 -timeout 6 -verbose -o {1}".format(domains, output, extras))
         return
     
     #enumerates urls using gau, filters using gf & probes using httpx

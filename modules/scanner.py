@@ -20,7 +20,7 @@ class Scanner:
 
     #runs nuclei
     def nuclei(self, template, hosts, output):
-        os.system("nuclei -retries 2 -bulk-size 130 -rate-limit 80 -t {3}nuclei/{0} -timeout 8 -l {1} -o {2}".format(template, hosts, output, self.templates))
+        os.system("nuclei -stats -retries 2 -bulk-size 130 -rate-limit 80 -t {3}nuclei/{0} -timeout 8 -l {1} -o {2}".format(template, hosts, output, self.templates))
         return
     
     #runs jaeles
@@ -50,7 +50,12 @@ class Scanner:
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
         os.system("cat {0}/subscan* > {1}".format(path, out))
-        return("completed subscan for: "+domain) 
+        if(os.path.exists(out)):
+            with open(out) as f:
+                line = len(f.readlines())
+        else:
+            line=0
+        return line
 
     #hunts for CVEs using nuclei & jaeles
     def cvescan(self):
@@ -67,7 +72,12 @@ class Scanner:
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
         os.system("cat {0}/cvescan* > {1}".format(path, out))
-        return("completed cvescan for: "+domain)
+        if(os.path.exists(out)):
+            with open(out) as f:
+                line = len(f.readlines())
+        else:
+            line=0
+        return line
 
     #hunts for vulnerabilities using nuclei & jaeles
     def vulnscan(self):
@@ -84,7 +94,12 @@ class Scanner:
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
         os.system("cat {0}/vulnscan* > {1}".format(path, out))
-        return("completed vulnscan for: "+domain)
+        if(os.path.exists(out)):
+            with open(out) as f:
+                line = len(f.readlines())
+        else:
+            line=0
+        return line
     
     #scan with customized templates
     def cscan(self):
@@ -101,7 +116,12 @@ class Scanner:
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
         os.system("cat {0}/cscan* > {1}".format(path, out))
-        return("completed cscan for: "+domain)
+        if(os.path.exists(out)):
+            with open(out) as f:
+                line = len(f.readlines())
+        else:
+            line=0
+        return line
     
     #hunts for vulnerabilities & CVEs in endpoints using nuclei & jaeles
     def endscan(self):
@@ -122,7 +142,12 @@ class Scanner:
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
         os.system("cat {0}/endscan* > {1}".format(path, out))
-        return("completed endscan for: "+domain)
+        if(os.path.exists(out)):
+            with open(out) as f:
+                line = len(f.readlines())
+        else:
+            line=0
+        return line
     
 
     #hunts for vulnerabilities in URLs with parameters using nuclei & jaeles
@@ -142,7 +167,12 @@ class Scanner:
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
         os.system("cat {0}/parascan* > {1}".format(path, out))
-        return("completed parascan for: "+domain)
+        if(os.path.exists(out)):
+            with open(out) as f:
+                line = len(f.readlines())
+        else:
+            line=0
+        return line
 
     #hunts for unreferenced aws s3 buckets using S3Hunter
     def buckscan(self):
@@ -162,7 +192,12 @@ class Scanner:
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
         os.system("cat {0}/s3hunt* | sort -u > {1}".format(path, out))
-        return("completed buckscan for: "+domain)
+        if(os.path.exists(out)):
+            with open(out) as f:
+                line = len(f.readlines())
+        else:
+            line=0
+        return line
     
     #fingerprints probed servers using favinizer
     def favscan(self):
@@ -175,7 +210,12 @@ class Scanner:
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
         os.system("favinizer -d {2}/favinizer.yaml -t 10 -T 60 -l {0} -o {1}".format(subs, out, self.templates))
-        return("completed favscan for: "+domain) 
+        if(os.path.exists(out)):
+            with open(out) as f:
+                line = len(f.readlines())
+        else:
+            line=0
+        return line 
     
     #fingerprints probed servers using nuclei
     def idscan(self):
@@ -184,12 +224,20 @@ class Scanner:
         subs = path+"/webenum.kenz"
         if(os.path.exists(subs) == False):
             return("run webenum for: "+self.domain)
-        output = path+"/idscan.kenz"
-        if(os.path.exists(output)):
-            os.system("mv {0} {0}.old".format(output))
+        output = path+"/idscanDOMN.log"
         self.nuclei("idscan", subs, output)
-        return("completed idscan for: "+domain)
-    
+        output = path+"/idscanDOMJ.log"
+        self.jaeles("idscan", subs, output)
+        out = path+"/idscan.kenz"
+        if(os.path.exists(out)):
+            os.system("mv {0} {0}.old".format(out))
+        os.system("cat {0}/idscan* > {1}".format(path, out))
+        if(os.path.exists(out)):
+            with open(out) as f:
+                line = len(f.readlines())
+        else:
+            line=0
+        return line
     
     #scans open ports using NXScan
     def portscan(self):
@@ -203,7 +251,12 @@ class Scanner:
             os.system("mv {0} {0}.old".format(out))
         os.system("sudo NXScan --only-scan -l {0} -o {1} -T {2}/nmap-bootstrap.xsl".format(subs,path+"/nxscan",self.templates))
         os.system("cp {0}/scan.html {1}".format(path+"/nxscan",out))
-        return("completed portscan for: "+domain) 
+        if(os.path.exists(subs)):
+            with open(subs) as f:
+                line = len(f.readlines())
+        else:
+            line=0
+        return line
     
     #screenshots websites using aquatone
     def vizscan(self):
@@ -215,8 +268,13 @@ class Scanner:
             return("run webenum for: "+self.domain)
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
-        os.system("cat {0} | aquatone -threads=15 -http-timeout=15000 -resolution=\"720,480\" -save-body=false -out={1} -screenshot-timeout=100000".format(subs,path+"/aquatone"))
+        os.system("cat {0} | aquatone -threads=10 -http-timeout=15000 -resolution=\"720,480\" -save-body=false -out={1} -screenshot-timeout=200000".format(subs,path+"/aquatone"))
         os.system("cp {0}/aquatone_report.html {1}".format(path+"/aquatone",out))
         os.system("sed -i 's+screenshots/+aquatone/screenshots/+g' {0}".format(out))
         os.system("sed -i 's+headers/+aquatone/headers/+g' {0}".format(out))
-        return("completed vizscan for: "+domain)
+        if(os.path.exists(subs)):
+            with open(subs) as f:
+                line = len(f.readlines())
+        else:
+            line=0
+        return line
