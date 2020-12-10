@@ -522,13 +522,13 @@ class Kenzer(object):
     #synchronizes the local kenzerdb with github
     def sync(self):
         os.system("cd {0} && git remote set-url origin https://{1}@github.com/{2}/{3}.git && git pull && git add . && git commit -m updated && git push".format(_kenzerdb, _github, _user, _repo))
-        self.sendMessage("sync complete")
+        self.sendMessage("[synced]")
         return
     
     #upgrades kenzer to latest version
     def upgrade(self):
         os.system("bash update.sh")
-        self.sendMessage("upgrade completed")
+        self.sendMessage("[upgraded]")
         return
 
     #removes old log files
@@ -623,7 +623,7 @@ class Kenzer(object):
                     message = message.serialize()['text']
                     self.sendMessage(message)
         except Exception as exception:
-            self.sendMessage("Exception: {}".format(type(exception).__name__))
+            self.sendMessage("[exception] {}".format(type(exception).__name__))
             print(exception.__class__.__name__ + ": " + exception.message)
         return    
 
