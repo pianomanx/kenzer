@@ -4,4 +4,4 @@ git pull
 sudo cp * /usr/bin/
 cd ../kenzer-templates
 git pull
-#sudo systemctl restart kenzer.service
+sudo systemctl restart kenzer.service

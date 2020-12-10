@@ -1,3 +1,6 @@
+#sudo apt update && sudo apt upgrade
+#sudo pacman -S nmap xsltproc chromium-browser python3 python3-pip
+sudo apt install nmap xsltproc chromium-browser python3 python3-pip
 mkdir resources
 git clone https://github.com/ARPSyndicate/kenzerdb.git
 cd resources
@@ -12,8 +15,6 @@ sudo python3 -m spacy download en
 mkdir ~/.config
 mkdir ~/.config/subfinder
 mkdir ~/.gf
-#sudo pacman -S nmap xsltproc chromium-browser
-sudo apt install nmap xsltproc chromium-browser
 cp configs/subfinder.yaml ~/.config/subfinder/config.yaml
 cp resources/kenzer-templates/gf/* ~/.gf/
 ./run.sh
