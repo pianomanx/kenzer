@@ -41,7 +41,7 @@ class Enumerator:
         path = self.path
         subs = path+"/portenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run portenum for: "+domain)
+            return("!portenum")
         output = path+"/httpx.log"
         if(os.path.exists(output)):
             os.system("rm {0}".format(output))
@@ -63,7 +63,7 @@ class Enumerator:
         path = self.path
         subs = path+"/webenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run webenum for: "+domain)
+            return("!webenum")
         output = path+"/headenum.kenz"
         if(os.path.exists(output)):
             os.system("rm {0}".format(output))
@@ -99,7 +99,7 @@ class Enumerator:
         path = self.path
         subs = path+"/subenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run subenum for: "+domain)
+            return("!subenum")
         self.shuffsolv(subs, domain)
         output = path+"/portenum.kenz"
         subs = path+"/shuffsolv.log"
@@ -120,7 +120,7 @@ class Enumerator:
         path = self.path
         subs = path+"/subenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run subenum for: "+domain)
+            return("!subenum")
         output = path+"/dnsenum.kenz"
         if(os.path.exists(output)):
             os.system("mv {0} {0}.old".format(output))
@@ -138,7 +138,7 @@ class Enumerator:
         path = self.path
         subs = path+"/subenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run subenum for: "+domain)
+            return("!subenum")
         output = path+"/asnenum.kenz"
         if(os.path.exists(output)):
             os.system("rm {0}".format(output))
@@ -156,7 +156,7 @@ class Enumerator:
         path = self.path
         subs = path+"/webenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run webenum for: "+domain)
+            return("!webenum")
         output = path+"/conenum.kenz"
         if(os.path.exists(output)):
             os.system("rm {0}".format(output))

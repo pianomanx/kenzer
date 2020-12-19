@@ -37,11 +37,11 @@ class Scanner:
         output = path+"/subscanWEB.log"
         subs = path+"/webenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run webenum for: "+self.domain)
+            return("!webenum")
         self.nuclei("subscan/web", subs, output)
         subs = path+"/subenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run subenum for: "+self.domain)
+            return("!subenum")
         output = path+"/subscanDNS.log"
         self.nuclei("subscan/dns/subdomain-takeover-dns.yaml", subs, output)
         output = path+"/subscanDNSWILD.log"
@@ -63,7 +63,7 @@ class Scanner:
         path = self.path
         subs = path+"/webenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run webenum for: "+self.domain)
+            return("!webenum")
         output = path+"/cvescanDOMN.log"
         self.nuclei("cvescan", subs, output)
         output = path+"/cvescanDOMJ.log"
@@ -85,7 +85,7 @@ class Scanner:
         path = self.path
         subs = path+"/webenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run webenum for: "+self.domain)
+            return("!webenum")
         output = path+"/vulnscanDOMN.log"
         self.nuclei("vulnscan", subs, output)
         output = path+"/vulnscanDOMJ.log"
@@ -107,7 +107,7 @@ class Scanner:
         path = self.path
         subs = path+"/webenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run webenum for: "+self.domain)
+            return("!webenum")
         output = path+"/cscanDOMN.log"
         self.nuclei("cscan", subs, output)
         output = path+"/cscanDOMJ.log"
@@ -129,7 +129,7 @@ class Scanner:
         path = self.path
         subs = path+"/endpoints.kenz"
         if(os.path.exists(subs) == False):
-            return("no endpoints found for: "+self.domain)        
+            return("no endpoints found")        
         output = path+"/endscanVULN.log"
         self.nuclei("vulnscan", subs, output)
         output = path+"/endscanCVEN.log"
@@ -156,7 +156,7 @@ class Scanner:
         path = self.path
         subs = path+"/urlenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run urlenum for: "+self.domain)
+            return("!urlenum")
         params = path+"/params.log"
         os.system("cat {0} | gf params > {1}".format(subs, params))
         output = path+"/parascanN.log"
@@ -180,7 +180,7 @@ class Scanner:
         path = self.path
         subs = path+"/subenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run subenum for: "+self.domain)
+            return("!subenum")
         output = path+"/s3huntDirect.log"
         os.system("S3Hunter -l {0} -t 10  -T 60 -o {1} --only-direct".format(subs, output))
         output = path+"/iperms.log"
@@ -206,10 +206,10 @@ class Scanner:
         out = path+"/favscan.kenz"
         subs = path+"/webenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run webenum for: "+self.domain)
+            return("!webenum")
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
-        os.system("favinizer -d {2}/favinizer.yaml -t 10 -T 60 -l {0} -o {1}".format(subs, out, self.templates))
+        os.system("favinizer -d {2}/favinizer.yaml -t 15 -T 60 -l {0} -o {1}".format(subs, out, self.templates))
         if(os.path.exists(out)):
             with open(out) as f:
                 line = len(f.readlines())
@@ -223,7 +223,7 @@ class Scanner:
         path = self.path
         subs = path+"/webenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run webenum for: "+self.domain)
+            return("!webenum")
         output = path+"/idscanDOMN.log"
         self.nuclei("idscan", subs, output)
         output = path+"/idscanDOMJ.log"
@@ -246,7 +246,7 @@ class Scanner:
         out = path+"/portscan.kenz"
         subs = path+"/portenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run portenum for: "+self.domain)
+            return("!portenum")
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
         os.system("sudo NXScan --only-scan -l {0} -o {1} -T {2}/nmap-bootstrap.xsl".format(subs,path+"/nxscan",self.templates))
@@ -265,7 +265,7 @@ class Scanner:
         out = path+"/vizscan.kenz"
         subs = path+"/webenum.kenz"
         if(os.path.exists(subs) == False):
-            return("run webenum for: "+self.domain)
+            return("!webenum")
         if(os.path.exists(out)):
             os.system("mv {0} {0}.old".format(out))
         os.system("cat {0} | aquatone -threads=10 -http-timeout=15000 -resolution=\"720,480\" -save-body=false -out={1} -screenshot-timeout=200000".format(subs,path+"/aquatone"))

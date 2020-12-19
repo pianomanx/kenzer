@@ -49,7 +49,7 @@ class Kenzer(object):
     
     #initializations
     def __init__(self):
-        print(BLUE+"KENZER[3.03] by ARPSyndicate"+CLEAR)
+        print(BLUE+"KENZER[3.04] by ARPSyndicate"+CLEAR)
         print(YELLOW+"automated web assets enumeration & scanning"+CLEAR)
         self.client = zulip.Client(email=_BotMail, site=_Site, api_key=_APIKey)
         self.upload=False
@@ -81,7 +81,7 @@ class Kenzer(object):
 
     #manual
     def man(self):
-        message = "**KENZER[3.03]**\n"
+        message = "**KENZER[3.04]**\n"
         message +="**KENZER modules**\n"
         message +="  `subenum` - enumerates subdomains\n"
         message +="  `portenum` - enumerates open ports\n"
@@ -623,8 +623,8 @@ class Kenzer(object):
                     message = message.serialize()['text']
                     self.sendMessage(message)
         except Exception as exception:
-            self.sendMessage("[exception] {}".format(type(exception).__name__))
-            print(exception.__class__.__name__ + ": " + exception.message)
+            self.sendMessage("[exception] {0}:{1}".format(type(exception).__name__, str(exception)))
+            print(exception.__class__.__name__ + ": " + str(exception))
         return    
 
 #main
