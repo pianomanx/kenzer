@@ -534,7 +534,7 @@ class Kenzer(object):
     #removes old log files
     def remlog(self):
         for i in range(2,len(self.content)):
-            self.enum = enumerator.Enumerator(self.content[i].lower(), _kenzerdb)
+            self.enum = enumerator.Enumerator(self.content[i].lower(), _kenzerdb, _kenzer)
             message = self.enum.remlog()
             self.sendMessage(message)
         return
