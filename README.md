@@ -28,6 +28,7 @@
 >* `headenum` - enumerates additional info from webservers
 >* `asnenum` - enumerates asn
 >* `dnsenum` - enumerates dns records
+>* `mailenum` - enumerates email addresses
 >* `conenum` - enumerates hidden files & directories
 >* `urlenum` - enumerates urls
 >* `subscan` - hunts for subdomain takeovers

@@ -29,6 +29,9 @@ class Monitor:
         self.subenum()
         self.portenum()
         self.webenum()
+        self.dnsenum()
+        self.asnenum()
+        self.headenum()
         self.favscan()
         self.idscan()
         self.cvescan()
@@ -99,6 +102,73 @@ class Monitor:
                     f.write(subdomain)
         return
     
+    #normalizes headenum
+    def headenum(self):
+        kenzerdb = self.db
+        headenum = self.path+"/headenum.kenz"
+        if(os.path.exists(headenum) == False):
+            return
+        with open(headenum, 'r') as f:
+            domains = f.readlines()
+        domains=list(set(domains))
+        domains.sort()
+        for data in domains:
+            subdomain = data.split(" ")[0]
+            extracted = tldextract.extract(subdomain)
+            domain = "{}.{}".format(extracted.domain, extracted.suffix)
+            print(domain)
+            destination = kenzerdb+domain
+            if not os.path.exists(destination):
+                os.makedirs(destination)
+            with open(destination+"/headenum.kenz", 'a') as f:
+                    f.write(data)
+        return
+    
+    #normalizes asnenum
+    def asnenum(self):
+        kenzerdb = self.db
+        asnenum = self.path+"/asnenum.kenz"
+        if(os.path.exists(asnenum) == False):
+            return
+        with open(asnenum, 'r') as f:
+            domains = f.readlines()
+        domains=list(set(domains))
+        domains.sort()
+        for data in domains:
+            subdomain = data.split(" ")[0]
+            extracted = tldextract.extract(subdomain)
+            domain = "{}.{}".format(extracted.domain, extracted.suffix)
+            print(domain)
+            destination = kenzerdb+domain
+            if not os.path.exists(destination):
+                os.makedirs(destination)
+            with open(destination+"/asnenum.kenz", 'a') as f:
+                    f.write(data)
+        return
+
+    #normalizes dnsenum
+    def dnsenum(self):
+        kenzerdb = self.db
+        dnsenum = self.path+"/dnsenum.kenz"
+        if(os.path.exists(dnsenum) == False):
+            return
+        with open(dnsenum, 'r') as f:
+            domains = f.readlines()
+        domains=list(set(domains))
+        domains.sort()
+        for data in domains:
+            subdomain = data.split(" ")[1]
+            extracted = tldextract.extract(subdomain)
+            domain = "{}.{}".format(extracted.domain, extracted.suffix)
+            print(domain)
+            destination = kenzerdb+domain
+            if not os.path.exists(destination):
+                os.makedirs(destination)
+            with open(destination+"/dnsenum.kenz", 'a') as f:
+                    f.write(data)
+        return
+    
+
     #normalizes favscan
     def favscan(self):
         kenzerdb = self.db
@@ -143,7 +213,7 @@ class Monitor:
                     f.write(data)
         return
 
-#normalizes vulnscan
+    #normalizes vulnscan
     def vulnscan(self):
         kenzerdb = self.db
         vulnscan = self.path+"/vulnscan.kenz"
@@ -165,7 +235,7 @@ class Monitor:
                     f.write(data)
         return
 
-#normalizes cvescan
+    #normalizes cvescan
     def cvescan(self):
         kenzerdb = self.db
         cvescan = self.path+"/cvescan.kenz"
@@ -187,7 +257,7 @@ class Monitor:
                     f.write(data)
         return
 
-#normalizes buckscan
+    #normalizes buckscan
     def buckscan(self):
         kenzerdb = self.db
         buckscan = self.path+"/buckscan.kenz"

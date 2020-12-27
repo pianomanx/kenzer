@@ -142,7 +142,22 @@ class Enumerator:
         output = path+"/asnenum.kenz"
         if(os.path.exists(output)):
             os.system("rm {0}".format(output))
-        os.system("domlock -l {0} -o {1}".format(subs, output))
+        os.system("domlock -l {0} -o {1} -T 50".format(subs, output))
+        if(os.path.exists(output)):
+            with open(output) as f:
+                line = len(f.readlines())
+        else:
+            line = 0
+        return line
+      
+    #enumerates emails using EmailHarvester
+    def mailenum(self):
+        domain = self.domain
+        path = self.path
+        output = path+"/mailenum.kenz"
+        if(os.path.exists(output)):
+            os.system("rm {0}".format(output))
+        os.system("EmailHarvester -d {0} -s {1}".format(domain, output))
         if(os.path.exists(output)):
             with open(output) as f:
                 line = len(f.readlines())
@@ -160,7 +175,7 @@ class Enumerator:
         output = path+"/conenum.kenz"
         if(os.path.exists(output)):
             os.system("rm {0}".format(output))
-        os.system("ffuf -u FuZZDoM/FuZZCoN -w {0}:FuZZDoM,{1}:FuZZCoN -mc 200 -of html -o {2} -t 80".format(subs, self.resources+"/kenzer-templates/ffuf.lst", output))
+        os.system("ffuf -u FuZZDoM/FuZZCoN -w {0}:FuZZDoM,{1}:FuZZCoN -of html -o {2} -t 80".format(subs, self.resources+"/kenzer-templates/ffuf.lst", output))
         if(os.path.exists(output)):
             with open(output) as f:
                 line = len(f.readlines())
@@ -175,7 +190,7 @@ class Enumerator:
         output = self.resources+"/resolvers.txt"
         if(os.path.exists(output)):
             os.system("rm {0}".format(output))
-        os.system("wget -q https://public-dns.info/nameservers.txt -O {0}".format(output))
+        os.system("dnsvalidator -tL https://public-dns.info/nameservers.txt -threads 200 -o {0}".format(output))
     
     def generateSubdomainsWordist(self):
         os.system("cd {0} && wget -q https://raw.githubusercontent.com/internetwache/CT_subdomains/master/top-100000.txt -O top-100000.txt".format(self.resources))
@@ -193,7 +208,7 @@ class Enumerator:
         path+="/shuffsolv.log"
         if(os.path.exists(path)):
             os.system("rm {0}".format(path))
-        os.system("shuffledns -strict-wildcard -retries 10 -wt 25 -r {3}/resolvers.txt -o {0} -v -list {1} -d {2}".format(path, domains, domain,self.resources))
+        os.system("shuffledns -strict-wildcard -retries 6 -wt 25 -r {3}/resolvers.txt -o {0} -v -list {1} -d {2}".format(path, domains, domain,self.resources))
         return
 
     #enumerates subdomains using github-subdomains
@@ -228,7 +243,7 @@ class Enumerator:
         output = path+"/shuffledns.log"
         if(os.path.exists(output)):
             os.system("rm {0}".format(output))
-        os.system("shuffledns -retries 10 -strict-wildcard -wt 30 -r {2}/resolvers.txt -w {2}/subdomains.txt -o {0} -v -d {1}".format(output, domain, self.resources))
+        os.system("shuffledns -retries 6 -strict-wildcard -wt 30 -r {2}/resolvers.txt -w {2}/subdomains.txt -o {0} -v -d {1}".format(output, domain, self.resources))
         self.shuffsolv(output, domain)
         os.system("rm {0} && mv {1} {0}".format(output, path+"/shuffsolv.log"))
         return 

@@ -30,7 +30,7 @@ class Scanner:
 
     #core modules
 
-    #hunts for subdomain takeovers using nuclei & dnsprobe
+    #hunts for subdomain takeovers using nuclei
     def subscan(self):
         domain = self.domain
         path = self.path
@@ -217,7 +217,7 @@ class Scanner:
             line=0
         return line 
     
-    #fingerprints probed servers using nuclei
+    #fingerprints probed servers using nuclei & jaeles
     def idscan(self):
         domain = self.domain
         path = self.path

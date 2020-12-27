@@ -49,7 +49,7 @@ class Kenzer(object):
     
     #initializations
     def __init__(self):
-        print(BLUE+"KENZER[3.04] by ARPSyndicate"+CLEAR)
+        print(BLUE+"KENZER[3.05] by ARPSyndicate"+CLEAR)
         print(YELLOW+"automated web assets enumeration & scanning"+CLEAR)
         self.client = zulip.Client(email=_BotMail, site=_Site, api_key=_APIKey)
         self.upload=False
@@ -65,7 +65,7 @@ class Kenzer(object):
         time.sleep(3)
         self.trainer.train("chatterbot.corpus.english")
         time.sleep(3)
-        self.modules=["monitor", "subenum", "webenum", "headenum", "conenum", "dnsenum", "portenum", "asnenum", "urlenum", "favscan", "cscan", "idscan", "subscan", "cvescan", "vulnscan", "portscan", "parascan", "endscan", "buckscan", "vizscan", "enum", "scan", "recon", "hunt", "remlog", "sync"]
+        self.modules=["monitor", "subenum", "webenum", "headenum", "mailenum", "conenum", "dnsenum", "portenum", "asnenum", "urlenum", "favscan", "cscan", "idscan", "subscan", "cvescan", "vulnscan", "portscan", "parascan", "endscan", "buckscan", "vizscan", "enum", "scan", "recon", "hunt", "remlog", "sync"]
         print(YELLOW+"[*] KENZER is online"+CLEAR)
         print(YELLOW+"[*] {0} modules up & running".format(len(self.modules))+CLEAR)
 
@@ -81,12 +81,13 @@ class Kenzer(object):
 
     #manual
     def man(self):
-        message = "**KENZER[3.04]**\n"
+        message = "**KENZER[3.05]**\n"
         message +="**KENZER modules**\n"
         message +="  `subenum` - enumerates subdomains\n"
         message +="  `portenum` - enumerates open ports\n"
         message +="  `webenum` - enumerates webservers\n"
         message +="  `headenum` - enumerates additional info from webservers\n"
+        message +="  `mailenum` - enumerates email addresses\n"
         message +="  `conenum` - enumerates hidden files & directories\n"
         message +="  `dnsenum` - enumerates dns records\n"
         message +="  `asnenum` - enumerates asn\n"
@@ -181,6 +182,21 @@ class Kenzer(object):
             self.sendMessage("[subenum - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
             if self.upload:
                 file = "subenum.kenz"
+                self.uploader(self.content[i], file)
+        return
+    
+    #enumerates email addresses
+    def mailenum(self):
+        for i in range(2,len(self.content)):
+            if(validators.domain(self.content[i].lower())!= True and self.content[i].lower() != "monitor"):
+                self.sendMessage("[invalid] {0}".format(self.content[i].lower()))
+                continue
+            self.sendMessage("[mailenum - #({0}/{1})] {2}".format(i-1, len(self.content)-2, self.content[i].lower()))
+            self.enum = enumerator.Enumerator(self.content[i].lower(), _kenzerdb, _kenzer)
+            message = self.enum.mailenum()
+            self.sendMessage("[mailenum - #({0}/{1}) - {2}] {3}".format(i-1, len(self.content)-2, message, self.content[i].lower()))
+            if self.upload:
+                file = "mailenum.kenz"
                 self.uploader(self.content[i], file)
         return
 
@@ -470,6 +486,7 @@ class Kenzer(object):
         self.dnsenum()
         self.conenum()
         self.asnenum()
+        self.mailenum()
         #experimental ones
         #self.urlenum()
         return
@@ -497,6 +514,7 @@ class Kenzer(object):
         self.headenum()
         self.dnsenum()
         self.conenum()
+        self.mailenum()
         self.subscan()
         self.idscan()
         self.favscan()
@@ -567,6 +585,8 @@ class Kenzer(object):
                     self.subenum()
                 elif content[1].lower() == "webenum":
                     self.webenum()
+                elif content[1].lower() == "mailenum":
+                    self.mailenum()
                 elif content[1].lower() == "headenum":
                     self.headenum()
                 elif content[1].lower() == "asnenum":
