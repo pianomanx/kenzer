@@ -58,9 +58,7 @@
 ## The Beginner's Workflow
 ![workflow](screenshots/workflow.png)
 
-Although few more modules are available & much more is going to be released in the course of time which can advance this workflow, yet this one is enough to get started with. 
-
-## Popular Hunts
+Although few more modules are available & much more is going to be released in the course of time which can advance this workflow, yet this one is enough to get started with & listed below are few of its successful hunts.
 
 <img src="screenshots/dell.png" width="100" height="100">
 <img src="screenshots/unilever.png" width="100" height="100">
