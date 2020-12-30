@@ -21,7 +21,7 @@
 7. Test `@**kenzer** man` as Zulip input to display available commands.<br>
 8. All the commands can be used by mentioning the chatbot using the prefix `@**kenzer**`.<br>
 
-## Built-in Functionalities
+## Built-in Modules
 >* `subenum` - enumerates subdomains
 >* `portenum` - enumerates open ports
 >* `webenum` - enumerates webservers
@@ -54,6 +54,18 @@
 >* `sync` - synchronizes the local kenzerdb with github
 >* `kenzer <module>` - runs a specific modules
 >* `kenzer man` - shows this manual
+
+## The Beginner's Workflow
+![workflow](screenshots/workflow.png)
+
+Although few more modules are available & much more is going to be released in the course of time which can advance this workflow, yet this one is enough to get started with. 
+
+## Popular Hunts
+<img src="screenshots/dell.png" width="100" height="100">
+<img src="screenshots/unilever.png" width="100" height="100">
+<img src="screenshots/dod.png" width="100" height="100">
+<img src="screenshots/tts.png" width="100" height="100">
+<img src="screenshots/olx.png" width="100" height="100">
 
 **COMPATIBILITY TESTED ON ARCHLINUX(x64) & DEBIAN(x64) ONLY**<br>
 **FEEL FREE TO SUBMIT PULL REQUESTS**
