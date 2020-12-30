@@ -64,6 +64,8 @@ Although few more modules are available & much more is going to be released in t
 <img src="screenshots/dod.png" width="100" height="100">
 <img src="screenshots/tts.png" width="100" height="100">
 <img src="screenshots/olx.png" width="100" height="100">
+<img src="screenshots/paytm.png" width="100" height="100">
+<img src="screenshots/visma.png" width="100" height="100">
 
 **COMPATIBILITY TESTED ON ARCHLINUX(x64) & DEBIAN(x64) ONLY**<br>
 **FEEL FREE TO SUBMIT PULL REQUESTS**
