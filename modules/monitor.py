@@ -6,7 +6,7 @@ import tldextract
 class Monitor:
     
     #initializations
-    def __init__(self, domains, db):
+    def __init__(self, db, domains=""):
         self.domains = domains
         self.organization = "monitor"
         self.db = db
@@ -21,7 +21,10 @@ class Monitor:
         domains = self.domains
         path = self.path
         output = path+"/subenum.kenz"
-        os.system("certex -d {0} -o {1} &".format(domains, output))
+        if len(domains)==0:
+            os.system("certex -f {0} -o {1} &".format(db+"../domains.txt", output))
+        else:
+            os.system("certex -d {0} -o {1} &".format(domains, output))
         return
 
     #normalizes enumerations
@@ -58,6 +61,7 @@ class Monitor:
                 os.makedirs(destination)
             with open(destination+"/subenum.kenz", 'a') as f:
                     f.write(subdomain)
+            os.system("mv {0} {0}.old && sort -u {0}.old > {0}".format(destination+"/subenum.kenz"))
         return
 
     #normalizes portenum
@@ -79,6 +83,7 @@ class Monitor:
                 os.makedirs(destination)
             with open(destination+"/portenum.kenz", 'a') as f:
                     f.write(subdomain)
+            os.system("mv {0} {0}.old && sort -u {0}.old > {0}".format(destination+"/portenum.kenz"))
         return
 
     #normalizes webenum
@@ -100,6 +105,7 @@ class Monitor:
                 os.makedirs(destination)
             with open(destination+"/webenum.kenz", 'a') as f:
                     f.write(subdomain)
+            os.system("mv {0} {0}.old && sort -u {0}.old > {0}".format(destination+"/webenum.kenz"))
         return
     
     #normalizes headenum
@@ -122,6 +128,7 @@ class Monitor:
                 os.makedirs(destination)
             with open(destination+"/headenum.kenz", 'a') as f:
                     f.write(data)
+            os.system("mv {0} {0}.old && sort -u {0}.old > {0}".format(destination+"/headenum.kenz"))
         return
     
     #normalizes asnenum
@@ -144,6 +151,7 @@ class Monitor:
                 os.makedirs(destination)
             with open(destination+"/asnenum.kenz", 'a') as f:
                     f.write(data)
+            os.system("mv {0} {0}.old && sort -u {0}.old > {0}".format(destination+"/asnenum.kenz"))
         return
 
     #normalizes dnsenum
@@ -166,6 +174,7 @@ class Monitor:
                 os.makedirs(destination)
             with open(destination+"/dnsenum.kenz", 'a') as f:
                     f.write(data)
+            os.system("mv {0} {0}.old && sort -u {0}.old > {0}".format(destination+"/dnsenum.kenz"))
         return
     
 
@@ -189,6 +198,7 @@ class Monitor:
                 os.makedirs(destination)
             with open(destination+"/favscan.kenz", 'a') as f:
                     f.write(data)
+            os.system("mv {0} {0}.old && sort -u {0}.old > {0}".format(destination+"/favscan.kenz"))
         return
     
     #normalizes idscan
@@ -211,6 +221,7 @@ class Monitor:
                 os.makedirs(destination)
             with open(destination+"/idscan.kenz", 'a') as f:
                     f.write(data)
+            os.system("mv {0} {0}.old && sort -u {0}.old > {0}".format(destination+"/idscan.kenz"))
         return
 
     #normalizes vulnscan
@@ -233,6 +244,7 @@ class Monitor:
                 os.makedirs(destination)
             with open(destination+"/vulnscan.kenz", 'a') as f:
                     f.write(data)
+            os.system("mv {0} {0}.old && sort -u {0}.old > {0}".format(destination+"/vulnscan.kenz"))
         return
 
     #normalizes cvescan
@@ -255,6 +267,7 @@ class Monitor:
                 os.makedirs(destination)
             with open(destination+"/cvescan.kenz", 'a') as f:
                     f.write(data)
+            os.system("mv {0} {0}.old && sort -u {0}.old > {0}".format(destination+"/cvescan.kenz"))
         return
 
     #normalizes buckscan
@@ -277,4 +290,5 @@ class Monitor:
                 os.makedirs(destination)
             with open(destination+"/buckscan.kenz", 'a') as f:
                     f.write(data)
+            os.system("mv {0} {0}.old && sort -u {0}.old > {0}".format(destination+"/buckscan.kenz"))
         return

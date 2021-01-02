@@ -49,7 +49,7 @@ class Kenzer(object):
     
     #initializations
     def __init__(self):
-        print(BLUE+"KENZER[3.05] by ARPSyndicate"+CLEAR)
+        print(BLUE+"KENZER[3.06] by ARPSyndicate"+CLEAR)
         print(YELLOW+"automated web assets enumeration & scanning"+CLEAR)
         self.client = zulip.Client(email=_BotMail, site=_Site, api_key=_APIKey)
         self.upload=False
@@ -81,7 +81,7 @@ class Kenzer(object):
 
     #manual
     def man(self):
-        message = "**KENZER[3.05]**\n"
+        message = "**KENZER[3.06]**\n"
         message +="**KENZER modules**\n"
         message +="  `subenum` - enumerates subdomains\n"
         message +="  `portenum` - enumerates open ports\n"
@@ -113,6 +113,7 @@ class Kenzer(object):
         message +="  `upgrade` - upgrades kenzer to latest version\n"
         message +="  `monitor` - monitors ct logs for new subdomains\n"
         message +="  `monitor normalize` - normalizes the enumerations from ct logs\n"
+        message +="  `monitor db` - monitors ct logs for kenzerdb's domains.txt\n"
         message +="`kenzer <module>` - runs a specific modules\n"
         message +="`kenzer man` - shows this manual\n"
         message +="or you can just interact with chatterbot\n"
@@ -159,7 +160,17 @@ class Kenzer(object):
     #monitors ct logs
     def monitor(self):
         self.sendMessage("[monitoring - #({0})]".format(len(self.content)-2))
-        self.monitor = monitor.Monitor(" ".join(self.content[2:]), _kenzerdb)
+        self.monitor = monitor.Monitor( _kenzerdb, " ".join(self.content[2:]))
+        self.monitor.certex()
+        return
+    
+    #monitors ct logs for kenzerdb's domains.txt
+    def monitor_db(self):
+        domfile = _kenzerdb+"../domains.txt"
+        with open(domfile) as f:
+            line = len(f.readlines())
+        self.sendMessage("[monitoring - #({0})]".format(line))
+        self.monitor = monitor.Monitor(_kenzerdb)
         self.monitor.certex()
         return
 
@@ -579,6 +590,8 @@ class Kenzer(object):
                 elif content[1].lower() == "monitor":
                     if content[2].lower() == "normalize":
                         self.normalize()
+                    elif content[2].lower() == "db":
+                        self.monitor_kenzerdb()
                     else:
                         self.monitor()    
                 elif content[1].lower() == "subenum":
