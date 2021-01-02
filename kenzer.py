@@ -165,7 +165,7 @@ class Kenzer(object):
         return
     
     #monitors ct logs for kenzerdb's domains.txt
-    def monitor_db(self):
+    def monitor_kenzerdb(self):
         domfile = _kenzerdb+"../domains.txt"
         with open(domfile) as f:
             line = len(f.readlines())
